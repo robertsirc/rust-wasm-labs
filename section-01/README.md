@@ -43,6 +43,14 @@ rustup -h
 cargo -h
 ```
 
+## OSX Dependencies
+
+In order to use `cargo-generate` you will need to add the Xcode tool set. If it isn't installed through Xcode the following command will give you the dependencies needed:
+
+```bash
+xcode-select --install
+```
+
 ## Conclusion
 
 Very quick installation and configuration of a development environment for Rust.

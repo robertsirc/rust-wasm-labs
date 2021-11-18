@@ -22,24 +22,28 @@ To deploy Kubewarden we are going to need [Helm](https://helm.sh/) install on yo
 
 Add the Kubewarden repo via `Helm`:
 
-``` Bash
+```bash
 helm repo add kubewarden https://charts.kubewarden.io
 ```
 
 Ensure that the `cert-manager` is deployed:
 
-``` Bash
+```bash
 kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
 ```
 
 Install `kubewarden-crds`:
 
-``` Bash
+```bash
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
 ```
 
 Install `kubewarden-controller`:
 
-``` Bash
+```bash
 helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
 ```
+
+## Conclusion
+
+Installing Helm on your development machine and Kubewarden on a cluster.

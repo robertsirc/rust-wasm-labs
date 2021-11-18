@@ -1,0 +1,17 @@
+name: pod-sizer
+description: DESCRIPTION OF YOUR POLICY
+homepage: POLICY HOMEPAGE URL
+author:
+  name: Robert Sirchia <rsirchia@outlook.com>
+  homepage: https://author1.website
+download:
+  # Important: leave the __TAG__ around: this is automatically replaced with the value of the git tag
+  registry: ghcr.io/kubewarden/policies/pod-sizer:__TAG__
+  # url is optional
+  url: https://github.com/yourorg/pod-sizer/releases/download/__TAG__/policy.wasm
+keywords:
+  - this is freeform
+resources:
+  - Pod
+mutation: false
+contextAware: false
