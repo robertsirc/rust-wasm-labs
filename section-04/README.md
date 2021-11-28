@@ -1,4 +1,4 @@
-# Section Four Defining our Policy
+# Section Four Updating the Settings for the Policy
 
 ## Introduction
 
@@ -96,4 +96,3 @@ We will address this in another section.
 ## Conclusion
 
 In our policy we have modified the settings to handle `cpu_limits` and updated the test to handle it.
-
