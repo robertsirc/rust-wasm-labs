@@ -12,19 +12,19 @@ All previous sections completed.
 
 If you don't have the correct target installed (`wasm32-unknown-unknown`) you are going to need to install it
 
-``` Shell
+```bash
 rustup target add wasm32-unknown-unknown
 ```
 
 To build the `.wasm` file there is a simple command to run:
 
-``` Shell
+```bash
 make build
 ```
 
 The output should be in a directory like this:
 
-``` Shell
+```bash
 target/wasm32-unknown-unknown/release/pod_sizer.wasm
 ```
 

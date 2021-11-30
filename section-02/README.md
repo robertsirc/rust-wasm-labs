@@ -48,4 +48,4 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-co
 
 ## Conclusion
 
-Installing Helm on your development machine and Kubewarden on a cluster.
+Installing `Helm` and `kwctl` on your development machine and Kubewarden on a cluster.

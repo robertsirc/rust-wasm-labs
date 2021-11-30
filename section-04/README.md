@@ -14,7 +14,7 @@ All previous sections completed.
 
 In the `src/settings.rs` file we are going to modify it to look like this:
 
-``` Rust
+```Rust
 #[derive(Serialize, Deserialize, Default, Debug)]
 #[serde(default)]
 pub(crate) struct Settings {
@@ -28,7 +28,7 @@ This is where we are setting our cpu_limits value in the settings.
 
 There is a `fn` already in the `src/settings.rs` file called `validate` we are going to modify this to validate our settings:
 
-``` Rust
+```Rust
 impl kubewarden::settings::Validatable for Settings {
     fn validate(&self) -> Result<(), String> {
         info!(LOG_DRAIN, "starting settings validation");
@@ -47,7 +47,7 @@ This is ONLY checking to see if a CPU limit has been set. We can modify this lat
 
 The settings file has a small subset of tests, we are going to modify these test to test our settings. The settings tests should look like this:
 
-``` Rust
+```Rust
 #[test]
     fn accept_settings_with_cpu_limits_set() -> Result<(), ()> {
         let cpu_limits = String::from("0.1");
@@ -69,7 +69,7 @@ The settings file has a small subset of tests, we are going to modify these test
 
 If you run `cargo test` the terminal will have a few errors in other files:
 
-``` Shell
+```bash
 error[E0063]: missing field `cpu_limits` in initializer of `settings::Settings`
   --> src/lib.rs:78:23
    |
