@@ -77,7 +77,7 @@ fn container_at_or_under_limit(container: apicore::Container, settings_cpu_limit
     if container_cpu_limit == settings_cpu_limit {
         return true;
     }
-
+    
     return false;
 }
 
@@ -121,5 +121,37 @@ mod tests {
     }
 
     #[test]
-    
+    fn pods_over_limit_set() -> Result<()> {
+        let cpu_limits = String::from("1.5");
+        
+        let mut _limits: BTreeMap<String, apimachinery_quantity> = BTreeMap::new();
+        _limits.insert(String::from("cpu"), apimachinery_quantity { 0: String::from("2.0") });
+        
+        assert_eq!(
+            validate_pod(
+                apicore::Pod {
+                    spec: Some({
+                        apicore::PodSpec {
+                            containers: vec![
+                                apicore::Container {
+                                    resources: Some({
+                                        apicore::ResourceRequirements {
+                                            limits: Some(_limits),
+                                            ..apicore::ResourceRequirements::default()
+                                        }
+                                    }),
+                                    ..apicore::Container::default()
+                                }
+                            ],
+                            ..apicore::PodSpec::default()
+                        }
+                    }),
+                    ..apicore::Pod::default()
+                },
+                Settings { cpu_limits }
+            )?,
+            PolicyResponse::Reject("Rejected".to_string())
+        );
+        Ok(())
+    }
 }
