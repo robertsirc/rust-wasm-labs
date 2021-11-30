@@ -12,7 +12,12 @@
       "containers": [
         {
           "image": "nginx",
-          "name": "nginx"
+          "name": "nginx",
+          "resources": {
+            "limits": {
+              "cpu": "0.1"
+            } 
+          }  
         }
       ]
     }

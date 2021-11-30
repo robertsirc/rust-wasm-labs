@@ -1,9 +1,13 @@
+use anyhow::{anyhow, Result};
+use std::collections::BTreeMap;
+
 use lazy_static::lazy_static;
 
 extern crate wapc_guest as guest;
 use guest::prelude::*;
 
 use k8s_openapi::api::core::v1 as apicore;
+use k8s_openapi::apimachinery::pkg::api::resource::Quantity as apimachinery_quantity;
 
 extern crate kubewarden_policy_sdk as kubewarden;
 use kubewarden::{logging, protocol_version_guest, request::ValidationRequest, validate_settings};
@@ -27,104 +31,88 @@ pub extern "C" fn wapc_init() {
     register_function("protocol_version", protocol_version_guest);
 }
 
+#[derive(Debug, PartialEq)]
+enum PolicyResponse {
+    Accept,
+    Reject(String),
+}
+
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
 
-    info!(LOG_DRAIN, "starting validation");
+    let pod = match serde_json::from_value::<apicore::Pod>(validation_request.request.object) {
+        Ok(pod) => pod,
+        Err(_) => return kubewarden::accept_request(),
+    };
 
-    // TODO: you can unmarshal any Kubernetes API type you are interested in
-    match serde_json::from_value::<apicore::Pod>(validation_request.request.object) {
-        Ok(pod) => {
-            // TODO: your logic goes here
-            if pod.metadata.name == Some("invalid-pod-name".to_string()) {
-                let pod_name = pod.metadata.name.unwrap();
-                info!(
-                    LOG_DRAIN,
-                    "rejecting pod";
-                    "pod_name" => &pod_name
-                );
-                kubewarden::reject_request(
-                    Some(format!("pod name {} is not accepted", &pod_name)),
-                    None,
-                )
-            } else {
-                info!(LOG_DRAIN, "accepting resource");
-                kubewarden::accept_request()
-            }
-        }
-        Err(_) => {
-            // TODO: handle as you wish
-            // We were forwarded a request we cannot unmarshal or
-            // understand, just accept it
-            warn!(LOG_DRAIN, "cannot unmarshal resource: this policy does not know how to evaluate this resource; accept it");
-            kubewarden::accept_request()
-        }
+    let settings = validation_request.settings;
+
+    info!(LOG_DRAIN, "starting validation");
+    
+    match validate_pod(pod, settings)? {
+        PolicyResponse::Accept => kubewarden::accept_request(),
+        PolicyResponse::Reject(message) => kubewarden::reject_request(Some(message), None),
     }
+    
+}
+
+fn validate_pod(pod: apicore::Pod, settings: settings::Settings) -> Result<PolicyResponse> {
+    let pod_spec = pod.spec.ok_or_else(|| anyhow!("invalid pod spec"))?;
+
+    let all_containers = pod_spec.containers.into_iter().all(|container| {
+        container_at_or_under_limit(container, settings.cpu_limits.clone())
+    });
+
+    if all_containers {
+        Ok(PolicyResponse::Accept)
+    } else {
+        Ok(PolicyResponse::Reject("Rejected".to_string()))
+    }
+}
+
+fn container_at_or_under_limit(container: apicore::Container, settings_cpu_limit: String) -> bool {
+
+    true
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    use kubewarden_policy_sdk::test::Testcase;
-
     #[test]
-    fn accept_pod_with_valid_name() -> Result<(), ()> {
-        let request_file = "test_data/pod_creation.json";
-        let tc = Testcase {
-            name: String::from("Valid name"),
-            fixture_file: String::from(request_file),
-            expected_validation_result: true,
-            settings: Settings {},
-        };
-
-        let res = tc.eval(validate).unwrap();
-        assert!(
-            res.mutated_object.is_none(),
-            "Something mutated with test case: {}",
-            tc.name,
+    fn pods_at_limit_set() -> Result<()> {
+        let cpu_limits = String::from("1.5");
+        
+        let mut _limits: BTreeMap<String, apimachinery_quantity> = BTreeMap::new();
+        _limits.insert(String::from("cpu"), apimachinery_quantity { 0: String::from("1.5") });
+        
+        assert_eq!(
+            validate_pod(
+                apicore::Pod {
+                    spec: Some({
+                        apicore::PodSpec {
+                            containers: vec![
+                                apicore::Container {
+                                    resources: Some({
+                                        apicore::ResourceRequirements {
+                                            limits: Some(_limits),
+                                            ..apicore::ResourceRequirements::default()
+                                        }
+                                    }),
+                                    ..apicore::Container::default()
+                                }
+                            ],
+                            ..apicore::PodSpec::default()
+                        }
+                    }),
+                    ..apicore::Pod::default()
+                },
+                Settings { cpu_limits }
+            )?,
+            PolicyResponse::Accept
         );
-
         Ok(())
     }
 
-    #[test]
-    fn reject_pod_with_invalid_name() -> Result<(), ()> {
-        let request_file = "test_data/pod_creation_invalid_name.json";
-        let tc = Testcase {
-            name: String::from("Bad name"),
-            fixture_file: String::from(request_file),
-            expected_validation_result: false,
-            settings: Settings {},
-        };
 
-        let res = tc.eval(validate).unwrap();
-        assert!(
-            res.mutated_object.is_none(),
-            "Something mutated with test case: {}",
-            tc.name,
-        );
-
-        Ok(())
-    }
-
-    #[test]
-    fn accept_request_with_non_pod_resource() -> Result<(), ()> {
-        let request_file = "test_data/ingress_creation.json";
-        let tc = Testcase {
-            name: String::from("Ingress creation"),
-            fixture_file: String::from(request_file),
-            expected_validation_result: true,
-            settings: Settings {},
-        };
-
-        let res = tc.eval(validate).unwrap();
-        assert!(
-            res.mutated_object.is_none(),
-            "Something mutated with test case: {}",
-            tc.name,
-        );
-
-        Ok(())
-    }
 }
