@@ -26,9 +26,6 @@ mod tests {
 
     use kubewarden_policy_sdk::settings::Validatable;
 
-    // 1m is the smallest unit 
-    // 0.1 is 100m
-
     #[test]
     fn accept_settings_with_cpu_limits_set() -> Result<(), ()> {
         let cpu_limits = String::from("0.1");

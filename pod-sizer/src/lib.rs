@@ -48,36 +48,41 @@ fn validate(payload: &[u8]) -> CallResult {
     let settings = validation_request.settings;
 
     info!(LOG_DRAIN, "starting validation");
-    
+
     match validate_pod(pod, settings)? {
         PolicyResponse::Accept => kubewarden::accept_request(),
         PolicyResponse::Reject(message) => kubewarden::reject_request(Some(message), None),
     }
-    
 }
 
 fn validate_pod(pod: apicore::Pod, settings: settings::Settings) -> Result<PolicyResponse> {
     let pod_spec = pod.spec.ok_or_else(|| anyhow!("invalid pod spec"))?;
 
-    let all_containers = pod_spec.containers.into_iter().all(|container| {
-        container_at_or_under_limit(container, settings.cpu_limits.clone())
-    });
+    let all_containers = pod_spec
+        .containers
+        .into_iter()
+        .all(|container| container_at_or_under_limit(container, settings.cpu_limits.clone()));
 
     if all_containers {
         Ok(PolicyResponse::Accept)
     } else {
+        warn!(LOG_DRAIN, "Policy Rejected");
         Ok(PolicyResponse::Reject("Rejected".to_string()))
     }
 }
 
 fn container_at_or_under_limit(container: apicore::Container, settings_cpu_limit: String) -> bool {
-    let limits = container.resources.unwrap_or_default().limits.unwrap_or_default();
+    let limits = container
+        .resources
+        .unwrap_or_default()
+        .limits
+        .unwrap_or_default();
+
     let container_cpu_limit = limits.get("cpu").unwrap().0.clone();
 
     if container_cpu_limit == settings_cpu_limit {
         return true;
     }
-    
     return false;
 }
 
@@ -88,26 +93,27 @@ mod tests {
     #[test]
     fn pods_at_limit_set() -> Result<()> {
         let cpu_limits = String::from("1.5");
-        
         let mut _limits: BTreeMap<String, apimachinery_quantity> = BTreeMap::new();
-        _limits.insert(String::from("cpu"), apimachinery_quantity { 0: String::from("1.5") });
-        
+        _limits.insert(
+            String::from("cpu"),
+            apimachinery_quantity {
+                0: String::from("1.5"),
+            },
+        );
         assert_eq!(
             validate_pod(
                 apicore::Pod {
                     spec: Some({
                         apicore::PodSpec {
-                            containers: vec![
-                                apicore::Container {
-                                    resources: Some({
-                                        apicore::ResourceRequirements {
-                                            limits: Some(_limits),
-                                            ..apicore::ResourceRequirements::default()
-                                        }
-                                    }),
-                                    ..apicore::Container::default()
-                                }
-                            ],
+                            containers: vec![apicore::Container {
+                                resources: Some({
+                                    apicore::ResourceRequirements {
+                                        limits: Some(_limits),
+                                        ..apicore::ResourceRequirements::default()
+                                    }
+                                }),
+                                ..apicore::Container::default()
+                            }],
                             ..apicore::PodSpec::default()
                         }
                     }),
@@ -123,26 +129,27 @@ mod tests {
     #[test]
     fn pods_over_limit_set() -> Result<()> {
         let cpu_limits = String::from("1.5");
-        
         let mut _limits: BTreeMap<String, apimachinery_quantity> = BTreeMap::new();
-        _limits.insert(String::from("cpu"), apimachinery_quantity { 0: String::from("2.0") });
-        
+        _limits.insert(
+            String::from("cpu"),
+            apimachinery_quantity {
+                0: String::from("2.0"),
+            },
+        );
         assert_eq!(
             validate_pod(
                 apicore::Pod {
                     spec: Some({
                         apicore::PodSpec {
-                            containers: vec![
-                                apicore::Container {
-                                    resources: Some({
-                                        apicore::ResourceRequirements {
-                                            limits: Some(_limits),
-                                            ..apicore::ResourceRequirements::default()
-                                        }
-                                    }),
-                                    ..apicore::Container::default()
-                                }
-                            ],
+                            containers: vec![apicore::Container {
+                                resources: Some({
+                                    apicore::ResourceRequirements {
+                                        limits: Some(_limits),
+                                        ..apicore::ResourceRequirements::default()
+                                    }
+                                }),
+                                ..apicore::Container::default()
+                            }],
                             ..apicore::PodSpec::default()
                         }
                     }),
