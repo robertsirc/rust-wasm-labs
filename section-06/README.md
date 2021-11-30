@@ -21,3 +21,10 @@ To build the `.wasm` file there is a simple command to run:
 ``` Shell
 make build
 ```
+
+The output should be in a directory like this:
+
+``` Shell
+target/wasm32-unknown-unknown/release/pod_sizer.wasm
+```
+
