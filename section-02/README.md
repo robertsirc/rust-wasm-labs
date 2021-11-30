@@ -18,6 +18,8 @@ The cluster will also need a [`cert-manager`](https://cert-manager.io/docs/insta
 
 To deploy Kubewarden we are going to need [Helm](https://helm.sh/) install on your development machine.
 
+We are also going to need to install [kwctl](https://github.com/kubewarden/kwctl) on your local work station.
+
 ## Installing Kubewarden
 
 Add the Kubewarden repo via `Helm`:

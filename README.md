@@ -2,9 +2,7 @@
 
 Getting started with Rust and building out a Wasm for Kubewarden.
 
-``` shell
-This lab and subsequent project is for demo purposes and is by no means ready for production environment.
-```
+`This lab and subsequent project is for demo purposes and is by no means ready for production environment.`
 
 This is broken down in to a few sections as noted below:
 
