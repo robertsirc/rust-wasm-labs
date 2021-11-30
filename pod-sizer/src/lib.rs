@@ -71,8 +71,14 @@ fn validate_pod(pod: apicore::Pod, settings: settings::Settings) -> Result<Polic
 }
 
 fn container_at_or_under_limit(container: apicore::Container, settings_cpu_limit: String) -> bool {
+    let limits = container.resources.unwrap_or_default().limits.unwrap_or_default();
+    let container_cpu_limit = limits.get("cpu").unwrap().0.clone();
 
-    true
+    if container_cpu_limit == settings_cpu_limit {
+        return true;
+    }
+
+    return false;
 }
 
 #[cfg(test)]
@@ -114,5 +120,6 @@ mod tests {
         Ok(())
     }
 
-
+    #[test]
+    
 }
