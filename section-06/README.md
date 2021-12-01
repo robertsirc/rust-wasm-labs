@@ -1,4 +1,4 @@
-# Section Six Building and Deploying
+# Section Six Building and Testing
 
 ## Introduction
 
@@ -27,4 +27,18 @@ The output should be in a directory like this:
 ```bash
 target/wasm32-unknown-unknown/release/pod_sizer.wasm
 ```
+
+## Annotating the Policy
+
+Annotating a policy allow you to set metadata that travels with the policy. When using the template this file is in the root directory called `metadata.yaml`.
+
+Move the `pod_sizer.wasm` file to the root of the project directory.
+
+With the `kwctl` we can annotate the file:
+
+```bash
+kwctl annotate pod_sizer.wasm --metadata-path metadata.yml --output-path annotated-pod_sizer.wasm
+```
+
+## Testing the Policy
 

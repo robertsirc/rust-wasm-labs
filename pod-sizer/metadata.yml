@@ -14,6 +14,4 @@ annotations:
   io.kubewarden.policy.source: https://github.com/yourorg/pod-sizer
   io.kubewarden.policy.license: Apache-2.0
   io.kubewarden.policy.usage: |
-    Long explaination.
-
-    **Note well:** this can be Markdown text
+    This is a simple test policy written in Rust and built to WASM. 
