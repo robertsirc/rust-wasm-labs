@@ -43,3 +43,19 @@ kwctl annotate pod_sizer.wasm --metadata-path metadata.yml --output-path annotat
 ## Testing the Policy
 
 Testing policies are done through `kwctl run`.
+
+This command will test to make sure that the policy is accepting a pod created at the valid CPU limit:
+
+```bash
+kwctl run --request-path test_data/pod_creation_cpu_1.json --settings-json '{ "cpu_limits": "1.0"}' pod_sizer.wasm
+```
+
+This command will test to make sure that the policy is accepting a pod created at the invalid CPU limit:
+
+```bash
+kwctl run --request-path test_data/pod_creation_cpu_2.json --settings-json '{ "cpu_limits": "1.0"}' pod_sizer.wasm
+```
+
+## Conclusion
+
+In this section we annotated our policy using `kwctl`. We also tested our policy using `kwctl`.
