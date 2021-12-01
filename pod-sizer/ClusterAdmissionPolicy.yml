@@ -1,0 +1,16 @@
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: ClusterAdmissionPolicy
+metadata:
+  name: pod-sizer
+spec:
+  module: file://annotated-pod_sizer.wasm
+  rules:
+  - apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]
+    operations:
+    - CREATE
+  
+  mutating: false
+  settings:
+    cpu_limits: "1.0"

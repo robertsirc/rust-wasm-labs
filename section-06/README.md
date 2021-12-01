@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This section we are going to build and deploy our policy.
+This section we are going to build and test our policy locally.
 
 ## Prerequisites
 

@@ -1,7 +1,3 @@
-Please, note well: this file and the scaffold were generated from [a
-template](https://github.com/kubewarden/policy-rust-template). Make
-this project yours!
-
 # Kubewarden policy pod-sizer
 
 ## Description
@@ -18,7 +14,7 @@ tweaking them.
 
 ## License
 
-```
+```license
 Copyright (C) 2021 Robert Sirchia <rsirchia@outlook.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
