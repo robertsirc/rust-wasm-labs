@@ -42,3 +42,4 @@ kwctl annotate pod_sizer.wasm --metadata-path metadata.yml --output-path annotat
 
 ## Testing the Policy
 
+Testing policies are done through `kwctl run`.
