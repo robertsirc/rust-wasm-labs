@@ -10,7 +10,7 @@ All previous sections completed.
 
 ## Deploying the Policy
 
-In the project root directory. There is a file called `ClusterAdmissionPolicy.yml` This file looks something like this:
+In the project root directory. There is a file called `pod-sizer.yml` This file looks something like this:
 
 ```yml
 apiVersion: policies.kubewarden.io/v1alpha2
@@ -18,7 +18,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: pod-sizer
 spec:
-  module: file://annotated-pod_sizer.wasm
+  module: registry://ghcr.io/robertsirc/rust-wasm-labs/pod_sizer:v0.0.1
   rules:
   - apiGroups: [""]
     apiVersions: ["v1"]
@@ -36,7 +36,7 @@ Note since this is testing locally the `module` is coming from a local file syst
 In the terminal deploy the `ClusterAdmissionPolicy` with `kubectl`:
 
 ```bash
-kubectl apply -f ClusterAdmissionPolicy.yml
+kubectl apply -f pod-sizer.yml
 ```
 
 And you should get an output like this:

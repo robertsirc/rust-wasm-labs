@@ -1,5 +1,4 @@
 use anyhow::{anyhow, Result};
-use std::collections::BTreeMap;
 
 use lazy_static::lazy_static;
 
@@ -7,7 +6,6 @@ extern crate wapc_guest as guest;
 use guest::prelude::*;
 
 use k8s_openapi::api::core::v1 as apicore;
-use k8s_openapi::apimachinery::pkg::api::resource::Quantity as apimachinery_quantity;
 
 extern crate kubewarden_policy_sdk as kubewarden;
 use kubewarden::{logging, protocol_version_guest, request::ValidationRequest, validate_settings};
@@ -20,7 +18,7 @@ use slog::{info, o, warn, Logger};
 lazy_static! {
     static ref LOG_DRAIN: Logger = Logger::root(
         logging::KubewardenDrain::new(),
-        o!("policy" => "sample-policy")
+        o!("policy" => "pod-sizer")
     );
 }
 
@@ -80,6 +78,9 @@ fn container_at_or_under_limit(container: apicore::Container, settings_cpu_limit
 
     let container_cpu_limit = limits.get("cpu").unwrap().0.clone();
 
+    info!(LOG_DRAIN, "{}", container_cpu_limit.clone());
+    info!(LOG_DRAIN, "{}", settings_cpu_limit.clone());
+
     if container_cpu_limit == settings_cpu_limit {
         return true;
     }
@@ -89,6 +90,8 @@ fn container_at_or_under_limit(container: apicore::Container, settings_cpu_limit
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::BTreeMap;
+    use k8s_openapi::apimachinery::pkg::api::resource::Quantity as apimachinery_quantity;
 
     #[test]
     fn pods_at_limit_set() -> Result<()> {
