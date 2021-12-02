@@ -56,7 +56,7 @@ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kube
 To test this we can attempt to deploy a pod that exceeds our limits:
 
 ```bash
-kubectl
+kubectl apply -f pod.yml
 ```
 
 ## Conclusion

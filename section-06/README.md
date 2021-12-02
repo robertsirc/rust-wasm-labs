@@ -37,7 +37,7 @@ Move the `pod_sizer.wasm` file to the root of the project directory.
 With the `kwctl` we can annotate the file:
 
 ```bash
-kwctl annotate pod_sizer.wasm --metadata-path metadata.yml --output-path annotated-pod_sizer.wasm
+kwctl annotate target/wasm32-unknown-unknown/release/pod_sizer.wasm --metadata-path metadata.yml --output-path annotated-pod_sizer.wasm
 ```
 
 ## Testing the Policy
@@ -47,13 +47,13 @@ Testing policies are done through `kwctl run`.
 This command will test to make sure that the policy is accepting a pod created at the valid CPU limit:
 
 ```bash
-kwctl run --request-path test_data/pod_creation_cpu_1.json --settings-json '{ "cpu_limits": "1.0"}' pod_sizer.wasm
+kwctl run --request-path test_data/pod_creation_cpu_1.json --settings-json '{ "cpu_limits": "1.0"}' target/wasm32-unknown-unknown/release/pod_sizer.wasm
 ```
 
 This command will test to make sure that the policy is accepting a pod created at the invalid CPU limit:
 
 ```bash
-kwctl run --request-path test_data/pod_creation_cpu_2.json --settings-json '{ "cpu_limits": "1.0"}' pod_sizer.wasm
+kwctl run --request-path test_data/pod_creation_cpu_2.json --settings-json '{ "cpu_limits": "1.0"}' target/wasm32-unknown-unknown/release/pod_sizer.wasm
 ```
 
 ## Conclusion

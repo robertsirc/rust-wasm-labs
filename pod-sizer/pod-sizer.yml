@@ -3,7 +3,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: pod-sizer
 spec:
-  module: registry://ghcr.io/robertsirc/rust-wasm-labs/pod_sizer:v0.0.1
+  module: registry://ghcr.io/robertsirc/rust-wasm-labs/pod-sizer:v0.0.2
   rules:
   - apiGroups: [""]
     apiVersions: ["v1"]
@@ -13,4 +13,4 @@ spec:
   
   mutating: false
   settings:
-    cpu_limits: "1.0"
+    cpu_limits: "1"
