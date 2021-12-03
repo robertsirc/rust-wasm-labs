@@ -18,7 +18,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: pod-sizer
 spec:
-  module: registry://ghcr.io/robertsirc/rust-wasm-labs/pod_sizer:v0.0.1
+  module: registry://ghcr.io/robertsirc/rust-wasm-labs/pod-sizer:v0.0.2
   rules:
   - apiGroups: [""]
     apiVersions: ["v1"]
@@ -56,7 +56,13 @@ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kube
 To test this we can attempt to deploy a pod that exceeds our limits:
 
 ```bash
-kubectl apply -f pod.yml
+kubectl apply -f test_data/pod_2.yml
+```
+
+To test this we can attempt to deploy a pod that meets our limits:
+
+```bash
+kubectl apply -f test_data/pod_1.yml
 ```
 
 ## Conclusion

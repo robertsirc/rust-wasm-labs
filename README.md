@@ -18,6 +18,8 @@ This is broken down in to a few sections as noted below:
 
 - [section-06](https://github.com/robertsirc/rust-wasm-labs/tree/main/section-06)
 
+- [section-07](https://github.com/robertsirc/rust-wasm-labs/tree/main/section-07)
+
 There is also a folder that contains the project finished. Located here:
 
 - [pod-sizer](https://github.com/robertsirc/rust-wasm-labs/tree/main/pod-sizer)
