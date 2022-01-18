@@ -8,4 +8,4 @@ spec:
     image: nginx
     resources:
       limits:
-        cpu: "1"
+        cpu: "2"
