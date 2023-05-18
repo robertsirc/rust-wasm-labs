@@ -11,7 +11,7 @@ lint:
 	cargo clippy -- -D warnings
 
 .PHONY: test
-test: fmt lint
+test: fmt lint1
 	cargo test
 
 .PHONY: clean
