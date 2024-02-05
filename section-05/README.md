@@ -27,8 +27,6 @@ Next we are going to add the `anyhow` library to our `lib.rs` file:
 
 ```Rust
 use anyhow::{anyhow, Result};
-
-use lazy_static::lazy_static;
 ```
 
 We will remove the previous `match` statement from the `validate` function:
@@ -107,16 +105,16 @@ fn validate_pod(pod: apicore::Pod, settings: settings::Settings) -> Result<Polic
 And call this new function from our `validate` function:
 
 ```Rust
-match validate_pod(pod, settings)? {
+match validate_pod(pod, validation_request.settings)? {
     PolicyResponse::Accept => kubewarden::accept_request(),
-    PolicyResponse::Reject(message) => kubewarden::reject_request(Some(message), None),
+    PolicyResponse::Reject(message) => kubewarden::reject_request(Some(message), None, None, None),
 }
 ```
 
 Next create a function called `container_at_or_under_limit` this will handle our logic we are looking to implement:
 
 ```Rust
-fn container_at_or_under_limit(container: apicore::Container, settings_cpu_limit: String) -> bool {
+fn container_at_or_under_limit(_container: apicore::Container, _settings_cpu_limit: String) -> bool {
     true
 }
 ```
