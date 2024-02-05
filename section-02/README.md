@@ -46,6 +46,12 @@ Install `kubewarden-controller`:
 helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
 ```
 
+Install `kubewarden-defaults` Helm chart to get a default policy server:
+
+```bash
+helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults
+```
+
 ## Conclusion
 
 Installing `Helm` and `kwctl` on your development machine and Kubewarden on a cluster.

@@ -67,31 +67,23 @@ The settings file has a small subset of tests, we are going to modify these test
     }
 ```
 
-If you run `cargo test` the terminal will have a few errors in other files:
+If you run `cargo test` the terminal will show you all the test passing:
 
 ```bash
-error[E0063]: missing field `cpu_limits` in initializer of `settings::Settings`
-  --> src/lib.rs:78:23
-   |
-78 |             settings: Settings {},
-   |                       ^^^^^^^^ missing `cpu_limits`
+$cargo test
+    Finished test [unoptimized + debuginfo] target(s) in 0.01s
+     Running unittests src/lib.rs (target/debug/deps/pod_sizer-9c6b787ddc83ed29)
 
-error[E0063]: missing field `cpu_limits` in initializer of `settings::Settings`
-  --> src/lib.rs:98:23
-   |
-98 |             settings: Settings {},
-   |                       ^^^^^^^^ missing `cpu_limits`
+running 5 tests
+test settings::tests::accept_settings_with_cpu_limits_set ... ok
+test settings::tests::reject_settings_with_no_cpu_limits_set ... ok
+test tests::accept_request_with_non_pod_resource ... ok
+test tests::accept_pod_with_valid_name ... ok
+test tests::reject_pod_with_invalid_name ... ok
 
-error[E0063]: missing field `cpu_limits` in initializer of `settings::Settings`
-   --> src/lib.rs:118:23
-    |
-118 |             settings: Settings {},
-    |                       ^^^^^^^^ missing `cpu_limits`
-
-For more information about this error, try `rustc --explain E0063`.
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
 
-We will address this in another section.
 
 ## Conclusion
 
