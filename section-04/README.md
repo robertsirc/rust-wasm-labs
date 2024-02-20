@@ -84,7 +84,6 @@ test tests::reject_pod_with_invalid_name ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
 
-
 ## Conclusion
 
 In our policy we have modified the settings to handle `cpu_limits` and updated the test to handle it.
