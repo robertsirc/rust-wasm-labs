@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In this section will will be installing Rust and configuring our development environment.
+In this section will will be installing the Rust SDK and configuring our development environment.
 
 ## IDE
 
